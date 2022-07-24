@@ -15,8 +15,10 @@ DialogSelectOrg::DialogSelectOrg(QWidget *parent)
         m_DatabasesDir.mkpath(".");
 
     ui->setupUi(this);
+
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     ui->b_delete->setEnabled(false);
+
     ui->b_add->setEnabled(false);
     connect(ui->nameEdit, SIGNAL(textEdited(QString)), this, SLOT(slotTextEdited()));
 
@@ -27,8 +29,6 @@ DialogSelectOrg::DialogSelectOrg(QWidget *parent)
         str.chop(3);  // удалить ".db"
         ui->list->addItem(str);
     }
-
-    ui->list->setCurrentRow(0);
 }
 
 DialogSelectOrg::~DialogSelectOrg()
@@ -154,12 +154,6 @@ void DialogSelectOrg::showMessage(QMessageBox::Icon icon, const QString &title, 
     msg.exec();
 }
 
-void DialogSelectOrg::on_list_currentRowChanged(int currentRow)
-{
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-    ui->b_delete->setEnabled(true);
-}
-
 bool DialogSelectOrg::createNewDbFile(QString dbName)
 {
     if (!dbName.endsWith(".db"))
@@ -196,3 +190,18 @@ bool DialogSelectOrg::createNewDbFile(QString dbName)
         return false;
     }
 }
+
+void DialogSelectOrg::on_list_itemSelectionChanged()
+{
+    if(!ui->list->selectedItems().isEmpty())
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+        ui->b_delete->setEnabled(true);
+    }
+    else
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+        ui->b_delete->setEnabled(false);
+    }
+}
+

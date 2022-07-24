@@ -43,8 +43,7 @@ private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_list_itemDoubleClicked();
-
-    void on_list_currentRowChanged(int currentRow);
+    void on_list_itemSelectionChanged();
 };
 
 #endif // DIALOGSELECTORG_H
