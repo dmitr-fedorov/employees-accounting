@@ -30,6 +30,7 @@ private:
 
 private slots:
     void on_list_backups_itemClicked(QListWidgetItem *item);
+    void on_list_backups_itemSelectionChanged();
 };
 
 #endif // DIALOGSELECTBACKUPVERSION_H
