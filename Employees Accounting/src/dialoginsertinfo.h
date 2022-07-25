@@ -42,14 +42,12 @@ private:
 
     QList<QSqlRecord> redactedRecords;
 
-
     QSqlRecord generalInfoRec;
     QSqlRecord passportInfoRec;
     QSqlRecord otherDocsInfoRec;
     QSqlRecord additionalInfoRec;
 
 private slots:
-    void slotEditValueChanged();
     void on_buttonBox_accepted();
 };
 

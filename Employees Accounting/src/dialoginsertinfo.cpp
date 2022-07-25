@@ -15,12 +15,6 @@ DialogInsertInfo::DialogInsertInfo(QWidget *parent) :
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     lineEditsList = ui->tabWidget->findChildren<QLineEdit *>();
     dateEditsList = ui->tabWidget->findChildren<QDateEdit *>();
-
-    for (QLineEdit *lineEdit : lineEditsList)
-        connect(lineEdit, SIGNAL(textEdited(const QString&)), this, SLOT(slotEditValueChanged()));
-
-    for (QDateEdit *dateEdit : dateEditsList)
-        connect(dateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(slotEditValueChanged()));
 }
 
 DialogInsertInfo::~DialogInsertInfo()
@@ -107,11 +101,6 @@ void DialogInsertInfo::enablePreviewMode(bool enable)
 
         ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
     }
-}
-
-void DialogInsertInfo::slotEditValueChanged()
-{
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 }
 
 void DialogInsertInfo::on_buttonBox_accepted()
