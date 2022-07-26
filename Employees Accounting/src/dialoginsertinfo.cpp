@@ -12,7 +12,6 @@ DialogInsertInfo::DialogInsertInfo(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     lineEditsList = ui->tabWidget->findChildren<QLineEdit *>();
     dateEditsList = ui->tabWidget->findChildren<QDateEdit *>();
 }
@@ -138,8 +137,6 @@ void DialogInsertInfo::on_buttonBox_accepted()
     additionalInfoRec.setValue(4, ui->edit_nationality->text());
     additionalInfoRec.setValue(5, ui->edit_maritialStatus->text());
     redactedRecords << additionalInfoRec;
-
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     this->accept();
 }

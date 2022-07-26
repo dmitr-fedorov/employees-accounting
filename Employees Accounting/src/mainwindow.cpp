@@ -452,6 +452,21 @@ void MainWindow::revertChanges()
     m_FLAG_databaseIsModified = false;
 }
 
+int MainWindow::askForReconnectingToServer()
+{
+    QMessageBox msgBox(this);
+    msgBox.setIcon(QMessageBox::Warning);
+    msgBox.setWindowTitle("Нет подключения к серверу");
+    msgBox.setText("Сервер не отвечает.\n\n"
+                   "Повторить попытку подключения?");
+    msgBox.addButton(QMessageBox::Retry);
+    msgBox.addButton(QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Retry);
+    msgBox.setModal(true);
+
+    return msgBox.exec();
+}
+
 /*
  * Активирует режим предпросмотра загруженной базы данных в главном окне.
  * После активации этого режима нельзя менять информацию в базе данных.
@@ -746,25 +761,15 @@ void MainWindow::on_action_sendToServer_triggered()
         }
     }
 
-    while (!m_pTcpClient->isConnectedToServer())
+    if(!m_pTcpClient->isConnectedToServer())
     {
-        QMessageBox msgBox(this);
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setWindowTitle("Нет подключения к серверу");
-        msgBox.setText("Сервер не отвечает.\n\n"
-                       "Повторить попытку подключения?");
-        msgBox.addButton(QMessageBox::Retry);
-        msgBox.addButton(QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Retry);
-        msgBox.setModal(true);
-
-        if (msgBox.exec() == QMessageBox::Retry)
+        while (!m_pTcpClient->connectToServer(m_cServerHost, m_cServerPort))
         {
-            if (m_pTcpClient->connectToServer(m_cServerHost, m_cServerPort))
-                break;
+            if (askForReconnectingToServer() == QMessageBox::Retry)
+                continue;
+            else
+                return;
         }
-        else
-            break;
     }
 
     m_pTcpClient->sendDatabase(QFileInfo(m_DatabasesDirectory, m_currentDatabaseFileName));
@@ -792,25 +797,15 @@ void MainWindow::on_action_receiveFromServer_triggered()
         }
     }
 
-    while (!m_pTcpClient->isConnectedToServer())
+    if(!m_pTcpClient->isConnectedToServer())
     {
-        QMessageBox msgBox(this);
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setWindowTitle("Нет подключения к серверу");
-        msgBox.setText("Сервер не отвечает.\n\n"
-                       "Повторить попытку подключения?");
-        msgBox.addButton(QMessageBox::Retry);
-        msgBox.addButton(QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Retry);
-        msgBox.setModal(true);
-
-        if (msgBox.exec() == QMessageBox::Retry)
+        while (!m_pTcpClient->connectToServer(m_cServerHost, m_cServerPort))
         {
-            if (m_pTcpClient->connectToServer(m_cServerHost, m_cServerPort))
-                break;
+            if (askForReconnectingToServer() == QMessageBox::Retry)
+                continue;
+            else
+                return;
         }
-        else
-            break;
     }
 
     m_pTcpClient->sendDatabasesListRequest();

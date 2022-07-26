@@ -120,6 +120,8 @@ private:
     void submitChanges();
     void revertChanges();
 
+    int askForReconnectingToServer();
+
     void activatePreviewMode(const QByteArray &dbInBytes, QString dbName);
     void deactivatePreviewMode(QString dbFilePath = "");
 

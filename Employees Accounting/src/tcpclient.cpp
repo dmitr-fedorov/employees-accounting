@@ -20,7 +20,7 @@ TcpClient::TcpClient(QString host, int port, QWidget *parent)
 bool TcpClient::connectToServer(QString host, int port)
 {
     m_pServerSocket->connectToHost(host, port);
-    m_pServerSocket->waitForConnected(500);
+    m_pServerSocket->waitForConnected(150);
 
     return m_pServerSocket->state() == QAbstractSocket::ConnectedState;
 }
