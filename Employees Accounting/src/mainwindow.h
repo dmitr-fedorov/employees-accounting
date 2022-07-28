@@ -50,7 +50,7 @@ private:
 
     QDir m_DatabasesDirectory;
     QSqlDatabase m_currentDatabase;
-    QString m_currentDatabaseFileName;
+    QFileInfo m_currentDatabaseFileInfo;
 
     /*
      * Список записей-образцов с которыми нужно сравнивать

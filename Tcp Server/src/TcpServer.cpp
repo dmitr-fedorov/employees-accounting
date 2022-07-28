@@ -230,7 +230,7 @@ void TcpServer::slotReadyRead()
 
     if (incomingDataType == TcpDataType::Database)
     {
-        if (receivedDbName.endsWith(".db"))
+        if (receivedDbName.endsWith(".db", Qt::CaseInsensitive))
             receivedDbName.chop(3);
         qInfo() << "Получена база данных: " << receivedDbName;
 

@@ -54,8 +54,11 @@ MainWindow::~MainWindow()
 {
     delete ui;
 
-    QSqlDatabase::removeDatabase(m_currentDatabase.connectionName());
-    delete m_pTemporaryDatabaseFile;
+    if(m_pTemporaryDatabaseFile != nullptr)
+    {
+        QSqlDatabase::removeDatabase(m_pTemporaryDatabaseFile->fileName());
+        delete m_pTemporaryDatabaseFile;
+    }
 }
 
 /*
@@ -104,14 +107,9 @@ bool MainWindow::setupOrganization(const QString &databaseFilePath)
 
         fillDepartmentsList();
 
-        QFileInfo dbFileInfo(databaseFilePath);
-        m_currentDatabaseFileName = dbFileInfo.fileName();
+        m_currentDatabaseFileInfo.setFile(databaseFilePath);
 
-        if (m_currentDatabaseFileName.endsWith(".db"))
-            ui->label_currentOrg->setText(m_currentDatabaseFileName.chopped(3));
-        else
-            ui->label_currentOrg->setText(m_currentDatabaseFileName);
-
+        ui->label_currentOrg->setText(m_currentDatabaseFileInfo.baseName());
         ui->label_currentOrg->setStyleSheet("");
 
         ui->b_add->setEnabled(true);
@@ -222,15 +220,19 @@ bool MainWindow::checkDatabaseValidity(const QSqlDatabase &database)
  */
 void MainWindow::setNoOrganizationDisplayed()
 {
-    QSqlDatabase::removeDatabase(m_currentDatabase.connectionName());
+    if(m_pTemporaryDatabaseFile != nullptr)
+    {
+        QSqlDatabase::removeDatabase(m_pTemporaryDatabaseFile->fileName());
+        delete m_pTemporaryDatabaseFile;
+        m_pTemporaryDatabaseFile = nullptr;
+    }
 
     deleteTableModels();
 
     m_pTableCommandsStack->clear();
 
     ui->comboBox_departments->clear();
-    m_currentDatabaseFileName.clear();
-    ui->comboBox_departments->clear();
+    m_currentDatabaseFileInfo.setFile("");
 
     ui->label_currentOrg->setText("Организация не выбрана");
     ui->label_currentOrg->setStyleSheet("QLabel { color : gray; }");
@@ -404,7 +406,7 @@ void MainWindow::submitChanges()
        int othDocsIndex = getIndexAndRecordFromModel(requiredID, m_pOtherDocumentsInfoModel).first;
        int additInfIndex = getIndexAndRecordFromModel(requiredID, m_pAdditionalInfoModel).first;
 
-       ui->tableView->showRow(genInfIndex); // Для корректного удаления необходимо сперва показать запись
+       ui->tableView->showRow(genInfIndex);  // Для корректного удаления необходимо сперва показать запись
        m_pGeneralInfoModel->removeRow(genInfIndex);
        m_pPassportInfoModel->removeRow(passpInfIndex);
        m_pOtherDocumentsInfoModel->removeRow(othDocsIndex);
@@ -476,10 +478,15 @@ void MainWindow::activatePreviewMode(const QByteArray &dbInBytes, QString dbName
     if (dbName.isEmpty())
         dbName = "tempOrg.db";
 
-    if (!dbName.endsWith(".db"))
+    if (!dbName.endsWith(".db", Qt::CaseInsensitive))
         dbName.append(".db");
 
-    delete m_pTemporaryDatabaseFile;
+    if(m_pTemporaryDatabaseFile != nullptr)
+    {
+        QSqlDatabase::removeDatabase(m_pTemporaryDatabaseFile->fileName());
+        delete m_pTemporaryDatabaseFile;
+        m_pTemporaryDatabaseFile = nullptr;
+    }
     m_pTemporaryDatabaseFile = new QTemporaryFile(dbName, this);
     m_pTemporaryDatabaseFile->open();
     m_pTemporaryDatabaseFile->write(dbInBytes);
@@ -490,8 +497,6 @@ void MainWindow::activatePreviewMode(const QByteArray &dbInBytes, QString dbName
 
     if (setupOrganization(m_pTemporaryDatabaseFile->fileName()))
     {
-        m_currentDatabaseFileName = dbName;
-
         ui->b_add->hide();
         ui->b_delete->hide();
         ui->b_submitChanges->hide();
@@ -548,17 +553,18 @@ void MainWindow::deactivatePreviewMode(QString dbFilePath)
         return;
     }
 
-    if (!dbFilePath.endsWith(".db"))
-        dbFilePath += ".db";
-
     if (!setupOrganization(dbFilePath))
     {
         setNoOrganizationDisplayed();
         return;
     }
 
-    delete m_pTemporaryDatabaseFile;
-    m_pTemporaryDatabaseFile = nullptr;
+    if(m_pTemporaryDatabaseFile != nullptr)
+    {
+        QSqlDatabase::removeDatabase(m_pTemporaryDatabaseFile->fileName());
+        delete m_pTemporaryDatabaseFile;
+        m_pTemporaryDatabaseFile = nullptr;
+    }
 }
 
 /*
@@ -772,7 +778,7 @@ void MainWindow::on_action_sendToServer_triggered()
         }
     }
 
-    m_pTcpClient->sendDatabase(QFileInfo(m_DatabasesDirectory, m_currentDatabaseFileName));
+    m_pTcpClient->sendDatabase(m_currentDatabaseFileInfo);
 }
 
 void MainWindow::on_action_receiveFromServer_triggered()
@@ -869,9 +875,9 @@ void MainWindow::on_action_saveAs_triggered()
     }
 
     QString newFileName = QFileDialog::getSaveFileName(this);
-    if (!newFileName.endsWith(".db"))
+    if (!newFileName.endsWith(".db", Qt::CaseInsensitive))
         newFileName += ".db";
-    QFile::copy(m_DatabasesDirectory.path() + "/" + m_currentDatabaseFileName, newFileName);
+    QFile::copy(m_currentDatabaseFileInfo.absoluteFilePath(), newFileName);
 }
 
 void MainWindow::on_action_open_triggered()
@@ -911,8 +917,14 @@ void MainWindow::on_action_open_triggered()
 
 void MainWindow::on_b_previewSave_clicked()
 {
-    qInfo() << "Сохраняемая база данных в режиме предпросмотра: " << m_currentDatabaseFileName;
-    if (m_DatabasesDirectory.entryList().contains(m_currentDatabaseFileName))
+    QFileInfo tempDatabaseFileInfo(m_pTemporaryDatabaseFile->fileName());
+    /*!
+     * Имена временных файлов баз данных хранятся в формате "name.db.XXXXXX".
+     * Эта переменная содержит часть "name.db" имени базы без части ".XXXXXX".
+     */
+    QString tempDbFileCompleteBaseName(tempDatabaseFileInfo.completeBaseName());
+
+    if (m_DatabasesDirectory.entryList().contains(tempDbFileCompleteBaseName))
     {
         QMessageBox msgBox(this);
         msgBox.setWindowTitle("Замена существующего файла базы данных организации");
@@ -925,9 +937,9 @@ void MainWindow::on_b_previewSave_clicked()
 
         if (msgBox.exec() == QMessageBox::Yes)
         {
-            m_DatabasesDirectory.remove(m_currentDatabaseFileName);
+            m_DatabasesDirectory.remove(tempDbFileCompleteBaseName);
 
-            QString newDbFilePath = m_DatabasesDirectory.path() + "/" + m_currentDatabaseFileName;
+            QString newDbFilePath = m_DatabasesDirectory.path() + "/" + tempDbFileCompleteBaseName;
             QFile::copy(m_pTemporaryDatabaseFile->fileName(), newDbFilePath);
 
             deactivatePreviewMode(newDbFilePath);
@@ -939,20 +951,21 @@ void MainWindow::on_b_previewSave_clicked()
     }
     else
     {
-        QFile::copy(m_pTemporaryDatabaseFile->fileName(), m_DatabasesDirectory.path() + "/" + m_currentDatabaseFileName);
+        QString newDbFilePath(m_DatabasesDirectory.path() + "/" + tempDbFileCompleteBaseName);
+        QFile::copy(m_pTemporaryDatabaseFile->fileName(), newDbFilePath);
 
-        deactivatePreviewMode(m_DatabasesDirectory.path() + "/" + m_currentDatabaseFileName);
+        deactivatePreviewMode(newDbFilePath);
     }
 }
 
 void MainWindow::on_b_previewSaveAs_clicked()
 {
-    QString newFileName = QFileDialog::getSaveFileName(this);
-    if (!newFileName.endsWith(".db"))
-        newFileName += ".db";
-    QFile::copy(m_pTemporaryDatabaseFile->fileName(), newFileName);
+    QString saveFileName = QFileDialog::getSaveFileName(this);
+    if (!saveFileName.endsWith(".db", Qt::CaseInsensitive))
+        saveFileName += ".db";
+    QFile::copy(m_pTemporaryDatabaseFile->fileName(), saveFileName);
 
-    deactivatePreviewMode(newFileName);
+    deactivatePreviewMode(saveFileName);
 }
 
 void MainWindow::on_action_exit_triggered()

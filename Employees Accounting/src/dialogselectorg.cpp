@@ -156,7 +156,7 @@ void DialogSelectOrg::showMessage(QMessageBox::Icon icon, const QString &title, 
 
 bool DialogSelectOrg::createNewDbFile(QString dbName)
 {
-    if (!dbName.endsWith(".db"))
+    if (!dbName.endsWith(".db", Qt::CaseInsensitive))
         dbName.append(".db");
 
     if (m_DatabasesDir.entryList(QDir::Files).contains(dbName))
