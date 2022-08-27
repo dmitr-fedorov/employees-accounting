@@ -48,8 +48,8 @@ const QList<QString> cTableCreationCommandsList { "CREATE TABLE [Общая ин
 /*
  * Список строк, где каждая строка - название таблицы базы данных.
  */
-const QList<QString> cTableNamesList { "[Общая информация]", "[Паспортные данные]",
-                                       "[Другие документы]", "[Дополнительная информация]" };
+const QList<QString> cTableNamesList { "Общая информация", "Паспортные данные",
+                                       "Другие документы", "Дополнительная информация" };
 };
 
 #endif // DATABASECREATION_H

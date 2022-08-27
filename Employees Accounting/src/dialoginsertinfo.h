@@ -28,7 +28,7 @@ public:
     explicit DialogInsertInfo(QWidget *parent = nullptr);
     ~DialogInsertInfo();
 
-    void execWithNewRecords(QList<QSqlRecord> recordsList);
+    void execWithNewRecords(int employee_id, QList<QSqlRecord> recordsList);
     QList<QSqlRecord> getRecords();
     void enablePreviewMode(bool enable = false);
 

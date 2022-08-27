@@ -154,22 +154,22 @@ bool MainWindow::setupNewDatabase(const QString &databaseFilePath)
     deleteTableModels();
 
     m_pGeneralInfoModel = new QSqlTableModel(this, m_currentDatabase);
-    m_pGeneralInfoModel->setTable("[Общая информация]");
+    m_pGeneralInfoModel->setTable("Общая информация");
     m_pGeneralInfoModel->select();
     m_pGeneralInfoModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
     m_pPassportInfoModel = new QSqlTableModel(this, m_currentDatabase);
-    m_pPassportInfoModel->setTable("[Паспортные данные]");
+    m_pPassportInfoModel->setTable("Паспортные данные");
     m_pPassportInfoModel->select();
     m_pPassportInfoModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
     m_pOtherDocumentsInfoModel = new QSqlTableModel(this, m_currentDatabase);
-    m_pOtherDocumentsInfoModel->setTable("[Другие документы]");
+    m_pOtherDocumentsInfoModel->setTable("Другие документы");
     m_pOtherDocumentsInfoModel->select();
     m_pOtherDocumentsInfoModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
     m_pAdditionalInfoModel = new QSqlTableModel(this, m_currentDatabase);
-    m_pAdditionalInfoModel->setTable("[Дополнительная информация]");
+    m_pAdditionalInfoModel->setTable("Дополнительная информация");
     m_pAdditionalInfoModel->select();
     m_pAdditionalInfoModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
@@ -359,9 +359,9 @@ void MainWindow::slotServerCreatedDatabaseFile(bool dbFileCreated)
 QPair<int, QSqlRecord> MainWindow::getIndexAndRecordFromModel(const int ID,
                                                               QSqlTableModel *model)
 {
-    QPair<int, QSqlRecord> pair;
-
     const int IdFieldIndex = 0; // Индекс поля "ID" в model
+
+    QPair<int, QSqlRecord> pair;
 
     for (int i = 0; i < model->rowCount(); i++)
     {
@@ -369,11 +369,6 @@ QPair<int, QSqlRecord> MainWindow::getIndexAndRecordFromModel(const int ID,
        {
            pair.first = i;
            pair.second = model->record(i);
-       }
-       else if (i == model->rowCount() - 1)  //  Если запись не найдена
-       {
-           pair.first = -1;
-           pair.second = model->record();
        }
     }
 
@@ -694,7 +689,7 @@ void MainWindow::on_tableView_doubleClicked(const QModelIndex &index)
     int redactingAdditInfoRow = indexAndRecPair.first;
     recordsList << indexAndRecPair.second;
 
-    m_pInsertInfoDialog->execWithNewRecords(recordsList);
+    m_pInsertInfoDialog->execWithNewRecords(requiredID, recordsList);
     if (m_pInsertInfoDialog->result() == QDialog::Accepted)
     {
         QList< QPair<QSqlTableModel*, QPair<int, QSqlRecord>> > pairsList;

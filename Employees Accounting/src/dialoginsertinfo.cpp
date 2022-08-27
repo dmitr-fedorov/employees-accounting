@@ -28,9 +28,9 @@ DialogInsertInfo::~DialogInsertInfo()
  * Параметр recordsList - список записей с одним сотрудником из
  * каждой таблицы открытой в текущий момент базы данных.
  */
-void DialogInsertInfo::execWithNewRecords(QList<QSqlRecord> recordsList)
+void DialogInsertInfo::execWithNewRecords(int employee_id, QList<QSqlRecord> recordsList)
 {  
-    employeeID = recordsList.at(0).value(0).toInt();
+    employeeID = employee_id;
 
     generalInfoRec = recordsList.at(0);
     passportInfoRec = recordsList.at(1);
@@ -44,8 +44,8 @@ void DialogInsertInfo::execWithNewRecords(QList<QSqlRecord> recordsList)
     ui->edit_position->setText(generalInfoRec.value(5).toString());
     ui->edit_hireDate->setDate(generalInfoRec.value(6).toDate());
 
-    ui->edit_passportNumber->setText(passportInfoRec.value(1).toString());
-    ui->edit_passportSeries->setText(passportInfoRec.value(2).toString());
+    ui->edit_passportSeries->setText(passportInfoRec.value(1).toString());
+    ui->edit_passportNumber->setText(passportInfoRec.value(2).toString());
     ui->edit_issuanceDate->setDate(passportInfoRec.value(3).toDate());
     ui->edit_issuanceDepartmentName->setText(passportInfoRec.value(4).toString());
     ui->edit_issuanceDepartmentCode->setText(passportInfoRec.value(5).toString());
@@ -116,8 +116,8 @@ void DialogInsertInfo::on_buttonBox_accepted()
     redactedRecords << generalInfoRec;
 
     passportInfoRec.setValue(0, employeeID);
-    passportInfoRec.setValue(1, ui->edit_passportNumber->text());
-    passportInfoRec.setValue(2, ui->edit_passportSeries->text());
+    passportInfoRec.setValue(1, ui->edit_passportSeries->text());
+    passportInfoRec.setValue(2, ui->edit_passportNumber->text());
     passportInfoRec.setValue(3, ui->edit_issuanceDate->date());
     passportInfoRec.setValue(4, ui->edit_issuanceDepartmentName->text());
     passportInfoRec.setValue(5, ui->edit_issuanceDepartmentCode->text());

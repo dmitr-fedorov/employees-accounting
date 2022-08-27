@@ -13,7 +13,7 @@ TcpClient::TcpClient(QString host, int port, QWidget *parent)
 
     connect(m_pServerSocket, SIGNAL(connected()), this, SLOT(slotConnected()));
     connect(m_pServerSocket, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
-    connect(m_pServerSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+    connect(m_pServerSocket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
             this, SLOT(slotError(QAbstractSocket::SocketError)));
 }
 
