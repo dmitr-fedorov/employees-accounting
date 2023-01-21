@@ -1,4 +1,4 @@
-#include "tablecommands.h"
+#include "include/tablecommands.h"
 
 #include <QDebug>
 #include <QSqlRecord>

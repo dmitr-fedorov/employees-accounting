@@ -89,8 +89,8 @@
          <string>Добавить сотрудника</string>
         </property>
         <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/icons/add_employee.ico</normaloff>:/resources/icons/add_employee.ico</iconset>
+         <iconset resource="../resources/resources.qrc">
+          <normaloff>:/icons/add_employee.ico</normaloff>:/icons/add_employee.ico</iconset>
         </property>
        </widget>
       </item>
@@ -116,8 +116,8 @@
          <string>Удалить сотрудника</string>
         </property>
         <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/icons/remove_employee.ico</normaloff>:/resources/icons/remove_employee.ico</iconset>
+         <iconset resource="../resources/resources.qrc">
+          <normaloff>:/icons/remove_employee.ico</normaloff>:/icons/remove_employee.ico</iconset>
         </property>
        </widget>
       </item>
@@ -140,8 +140,8 @@
          <string>Сохранить</string>
         </property>
         <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/icons/save.ico</normaloff>:/resources/icons/save.ico</iconset>
+         <iconset resource="../resources/resources.qrc">
+          <normaloff>:/icons/save.ico</normaloff>:/icons/save.ico</iconset>
         </property>
        </widget>
       </item>
@@ -191,8 +191,8 @@
          <string>Принять изменения</string>
         </property>
         <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/icons/accept.ico</normaloff>:/resources/icons/accept.ico</iconset>
+         <iconset resource="../resources/resources.qrc">
+          <normaloff>:/icons/accept.ico</normaloff>:/icons/accept.ico</iconset>
         </property>
        </widget>
       </item>
@@ -218,8 +218,8 @@
          <string>Отменить изменения</string>
         </property>
         <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/icons/cancel.ico</normaloff>:/resources/icons/cancel.ico</iconset>
+         <iconset resource="../resources/resources.qrc">
+          <normaloff>:/icons/cancel.ico</normaloff>:/icons/cancel.ico</iconset>
         </property>
        </widget>
       </item>
@@ -261,8 +261,8 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_sendToServer">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/resources/icons/upload.ico</normaloff>:/resources/icons/upload.ico</iconset>
+    <iconset resource="../resources/resources.qrc">
+     <normaloff>:/icons/upload.ico</normaloff>:/icons/upload.ico</iconset>
    </property>
    <property name="text">
     <string>Отправить базу данных на сервер</string>
@@ -270,8 +270,8 @@
   </action>
   <action name="action_receiveFromServer">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/resources/icons/download.ico</normaloff>:/resources/icons/download.ico</iconset>
+    <iconset resource="../resources/resources.qrc">
+     <normaloff>:/icons/download.ico</normaloff>:/icons/download.ico</iconset>
    </property>
    <property name="text">
     <string>Получить базу данных с сервера...</string>
@@ -290,8 +290,8 @@
   </action>
   <action name="action_saveAs">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/resources/icons/save.ico</normaloff>:/resources/icons/save.ico</iconset>
+    <iconset resource="../resources/resources.qrc">
+     <normaloff>:/icons/save.ico</normaloff>:/icons/save.ico</iconset>
    </property>
    <property name="text">
     <string>Сохранить как...</string>
@@ -302,8 +302,8 @@
   </action>
   <action name="action_open">
    <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/resources/icons/open.ico</normaloff>:/resources/icons/open.ico</iconset>
+    <iconset resource="../resources/resources.qrc">
+     <normaloff>:/icons/open.ico</normaloff>:/icons/open.ico</iconset>
    </property>
    <property name="text">
     <string>Открыть...</string>
@@ -325,7 +325,7 @@
   </action>
  </widget>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -1,6 +1,6 @@
-#include "dialogselectorg.h"
+#include "include/dialogselectorg.h"
 #include "ui_dialogselectorg.h"
-#include "databasecreation.h"
+#include "include/databasecreation.h"
 
 #include <QSqlQuery>
 #include <QSqlDatabase>
@@ -10,7 +10,7 @@ DialogSelectOrg::DialogSelectOrg(QWidget *parent)
     : QDialog(parent),
       ui(new Ui::DialogSelectOrg)
 {
-    m_DatabasesDir = QCoreApplication::applicationDirPath() + "/" + "Organizations";
+    m_DatabasesDir = QCoreApplication::applicationDirPath() + "/" + "organizations";
     if (!m_DatabasesDir.exists())
         m_DatabasesDir.mkpath(".");
 

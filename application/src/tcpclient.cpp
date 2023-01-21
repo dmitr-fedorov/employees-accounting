@@ -1,5 +1,5 @@
-#include "tcpclient.h"
-#include "dialogselectbackupversion.h"
+#include "include/tcpclient.h"
+#include "include/dialogselectbackupversion.h"
 
 #include <QFile>
 #include <QCoreApplication>

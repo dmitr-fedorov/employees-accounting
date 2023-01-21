@@ -1,8 +1,8 @@
-#include "mainwindow.h"
+#include "include/mainwindow.h"
 #include "ui_mainwindow.h"
-#include "dialogselectorg.h"
-#include "tablecommands.h"
-#include "databasecreation.h"
+#include "include/dialogselectorg.h"
+#include "include/tablecommands.h"
+#include "include/databasecreation.h"
 
 #include <QCoreApplication>
 #include <QSqlQuery>
@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->b_previewSave->hide();
     ui->b_previewSaveAs->hide();
 
-    m_DatabasesDirectory = QCoreApplication::applicationDirPath() + "/Organizations";
+    m_DatabasesDirectory = QCoreApplication::applicationDirPath() + "/organizations";
     if (!m_DatabasesDirectory.exists())
         m_DatabasesDirectory.mkpath(".");
 
@@ -283,11 +283,11 @@ void MainWindow::deleteTableModels()
 void MainWindow::createActions()
 {
     m_pUndoAction = m_pTableCommandsStack->createUndoAction(ui->menu_edit, "&Отменить");
-    QIcon undoActionIcon(":/resources/icons/undo.ico");
+    QIcon undoActionIcon(":/icons/undo.ico");
     m_pUndoAction->setIcon(undoActionIcon);  
 
     m_pRedoAction = m_pTableCommandsStack->createRedoAction(ui->menu_edit, "&Повторить");
-    QIcon redoActionIcon(":/resources/icons/redo.ico");
+    QIcon redoActionIcon(":/icons/redo.ico");
     m_pRedoAction->setIcon(redoActionIcon);
 
     ui->menu_edit->addAction(m_pUndoAction);

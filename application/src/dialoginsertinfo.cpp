@@ -1,4 +1,4 @@
-#include "dialoginsertinfo.h"
+#include "include/dialoginsertinfo.h"
 #include "ui_dialoginsertinfo.h"
 
 #include <QSqlRecord>

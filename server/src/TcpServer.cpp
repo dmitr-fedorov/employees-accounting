@@ -1,4 +1,4 @@
-#include "TcpServer.h"
+#include "include/TcpServer.h"
 
 #include <QCoreApplication>
 #include <QFile>
@@ -8,7 +8,7 @@
 
 TcpServer::TcpServer()
 {
-    m_databasesDirectory = QCoreApplication::applicationDirPath() + "/Backups";
+    m_databasesDirectory = QCoreApplication::applicationDirPath() + "/databases";
     if (!m_databasesDirectory.exists())
         m_databasesDirectory.mkpath(".");
 
@@ -120,7 +120,7 @@ bool TcpServer::createNewDatabaseFile(const QByteArray &dbInBytes, QString dbNam
     return true;
 }
 
-/* Базы данных хранятся в папке Backups
+/* Базы данных хранятся в папке databases
  * с именем в формате "Имя день-месяц-год--час-минуты-cекунды.db".
  *
  * Функция отделяет "Имя" от " день-месяц-год--час-минуты-cекунды.db"

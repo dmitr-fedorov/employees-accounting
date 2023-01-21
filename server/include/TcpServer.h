@@ -1,7 +1,7 @@
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
 
-#include "TcpDataTypes.h"
+#include "include/TcpDataTypes.h"
 
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -11,11 +11,10 @@
  * Класс сервера, обеспечивающего
  * обмен данными с одним клиентом по протоколу TCP.
  *
- *
  * В его задачи входят:
  *
  * - Получение базы данных от клиента и ее сохранение
- * в папке Backups в директории программы;
+ * в папке databases в директории программы;
  *
  * - Отправка клиенту результата сохранения полученной базы данных;
  *

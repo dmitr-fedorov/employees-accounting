@@ -13,7 +13,7 @@ class DialogSelectOrg;
 
 /*
  * Позволяет выбрать нужную организацию для отображения
- * из папки "Organizations" в директории приложения.
+ * из папки "organizations" в директории приложения.
  */
 class DialogSelectOrg : public QDialog
 {

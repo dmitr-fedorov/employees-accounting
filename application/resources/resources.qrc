@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/accept.ico</file>
+        <file>icons/add_employee.ico</file>
+        <file>icons/cancel.ico</file>
+        <file>icons/download.ico</file>
+        <file>icons/open.ico</file>
+        <file>icons/redo.ico</file>
+        <file>icons/remove_employee.ico</file>
+        <file>icons/save.ico</file>
+        <file>icons/undo.ico</file>
+        <file>icons/upload.ico</file>
+    </qresource>
+</RCC>
