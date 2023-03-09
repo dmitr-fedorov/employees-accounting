@@ -1,9 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "dialoginsertinfo.h"
-#include "tcpclient.h"
-
 #include <QMainWindow>
 #include <QSqlDatabase>
 #include <QSqlTableModel>
@@ -12,23 +9,21 @@
 #include <QDir>
 #include <QTemporaryFile>
 
+#include "dialoginsertinfo.h"
+#include "tcpclient.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 /*
  * Класс главного окна приложения.
- *
- * Этот класс содержит объект открытой в данный момент базы данных организации,
- * а также модели для каждой таблицы этой базы данных.
- *
- * Также содержит объект директории с базами данных,
- * с которыми работает приложение.
- *
- * Обязанности этого класса:
+ * Обязанности:
  * - Обеспечение взаимодействия пользователя с открытой базой данных;
- * - Отображение титульной таблицы под названием "Общая информация" открытой базы данных;
- * - Вызов окна, отображающего и позволяющего редактировать информацию о выбранном пользователем сотруднике;
+ * - Отображение титульной таблицы под названием "Общая информация"
+ *   открытой базы данных;
+ * - Вызов окна, отображающего и позволяющего редактировать информацию о
+ *   выбранном пользователем сотруднике;
  * - Отслеживание наличия внесенных пользователем изменений в базу данных;
  * - Сохранение или отмена внесенных пользователем изменений;
  * - Инициация процесса загрузки базы данных на сервер и с сервера;
@@ -48,18 +43,19 @@ protected:
 private:
     Ui::MainWindow *ui;
 
-    QDir m_DatabasesDirectory;
+    QDir m_databasesDirectory;
+
     QSqlDatabase m_currentDatabase;
+
     QFileInfo m_currentDatabaseFileInfo;
 
     /*
      * Список записей-образцов с которыми нужно сравнивать
      * записи из каждой таблицы открываемой базы данных.
-     *
      * Необходимо, чтобы удостовериться в том, что программа
      * сможет корректно работать с открываемой базой данных.
      */
-    const QList<QSqlRecord> m_recordsForComparisonList;
+    const QList<QSqlRecord> m_recordsForComparison;
 
     QSqlTableModel *m_pGeneralInfoModel = nullptr;
     QSqlTableModel *m_pPassportInfoModel = nullptr;
@@ -71,18 +67,17 @@ private:
     int m_clickedRow = -1;
     int m_clickedColumn = -1;
 
-    bool m_FLAG_databaseIsModified = false;
+    bool m_isDatabaseModified = false;
     /*
      * Стек команд, изменяющих базу данных.
      * Необходим для отмены и повтора изменений.
      */
-    QUndoStack *m_pTableCommandsStack = nullptr;
+    QUndoStack *m_pTableCommands = nullptr;
     /*
-     * Стек скрытых строк в MainWindow::m_pGeneralInfoModel,
+     * Стек скрытых строк в m_pGeneralInfoModel,
      * которые были помечены для удаления.
-     * Строки удаляются при подтверждении внесенных изменений.
      */
-    QStack<int> m_hiddenRowsStack;
+    QStack<int> m_hiddenRows;
 
     /*
      * Диалоговое окно для отображения и редактирования
@@ -92,6 +87,7 @@ private:
 
     const QString m_cServerHost = "127.0.0.1";
     const int m_cServerPort = 2323;
+
     TcpClient *m_pTcpClient = nullptr;
 
     QTemporaryFile *m_pTemporaryDatabaseFile = nullptr;
@@ -102,39 +98,93 @@ private:
     QAction *m_pUndoAction = nullptr;
     QAction *m_pRedoAction = nullptr;
 
-    QList<QSqlRecord> getRecordsForComparisonList();
+    void setupDatabasesDirectory();
+
+    void setupTableCommandsStack();
+
+    void setupTcpClient();
+
+    void setupUi();
+
+    bool setupDatabase(const QString &databaseFilePath);
+
+    bool setupOrganization(const QString &databaseFilePath);
+
+    void selectOrganizationToDisplay();
+
+    /*
+     * Создает временный файл базы данных со структурой таблиц,
+     * которая отвечает требованиям программы.
+     * Возвращает список пустых записей из каждой таблицы этой базы данных.
+     */
+    QList<QSqlRecord> createRecordsForComparison();
+    /*
+     * Проверяет, соответствует ли структура базы данных database требованиям программы.
+     * Возвращает true, если соответствует, в противном случае возвращает false.
+     */
     bool checkDatabaseValidity(const QSqlDatabase &database);
 
-    bool setupOrganization(const QString &databaseFilePath);    
-    bool setupNewDatabase(const QString &databaseFilePath);
-    void deleteTableModels();
+    void deleteTableModels();    
+    void deleteTempDatabaseFile();
+
+    /*
+     * Очищает табличное представление главного окна,
+     * блокирует элементы интерфейса, через которые пользователь
+     * может взаимодействовать с базой данных.
+     */
     void setNoOrganizationDisplayed();
+
     void fillDepartmentsList();
 
     void createActions();
     void createShortcuts();
 
-    QPair<int, QSqlRecord> getIndexAndRecordFromModel(const int ID, QSqlTableModel *model);
+    /*
+     * Ищет запись сотрудника в модели по его ID.
+     * Возвращает пару, где первое значение - индекс сотрудника,
+     * второе - запись по этому индексу из таблицы.
+     * Если запись не была найдена - назначает первому значению -1,
+     * а второму - пустую запись из модели.
+     */
+    QPair<int, QSqlRecord>
+    getIndexAndRecordFromModel(const int ID, QSqlTableModel *model);
 
-    int askForSaveChanges();
+    void removeHiddenRows();
+
     void submitChanges();
     void revertChanges();
 
-    int askForReconnectingToServer();
+    bool tryToConnectToServer();
 
-    void activatePreviewMode(const QByteArray &dbInBytes, QString dbName);
-    void deactivatePreviewMode(QString dbFilePath = "");
+    int askToSaveChanges();
+    int askToOverwriteOrganization();
+    int askToReconnectToServer();
 
 private slots:
-    void slotHideRow(int rowIndex);
-    void slotShowRow(int rowIndex);
+    void hideRow(int rowIndex);
+    void showRow(int rowIndex);
 
-    void slotCanUndoChanged(bool canUndo);
-    void slotModifierWasUndone() { m_FLAG_databaseIsModified = false; }
-    void slotModifierWasRedone() { m_FLAG_databaseIsModified = true;  }
+    void setSubmitRevertEnabled(bool enabled);
+    void setIsDatabaseModifiedTrue();
+    void setIsDatabaseModifiedFalse();
 
-    void slotReceiveDatabase(const QByteArray &dbInBytes, QString dbName);
-    void slotServerCreatedDatabaseFile(bool dbFileCreated);
+    /*
+     * Активирует режим предпросмотра базы данных.
+     * Создает временный файл базы данных из dbInBytes с именем dbName.
+     * Отображает эту базу в табличном представлении
+     * и блокирует возможность ее редактировать.
+     */
+    void activatePreviewMode(const QByteArray &dbInBytes, QString dbName);
+    /*
+     * Деактивирует режим предпросмотра базы данных.
+     * Отображает базу данных по пути dbFilePath
+     * и разблокировывает возможность ее редактировать.
+     * Не отображает никакую базу данных, если не удалось
+     * открыть базу по этому пути.
+     */
+    void deactivatePreviewMode(QString dbFilePath = "");
+
+    void displayDbFileCreationStatus(bool dbFileCreated);
 
     void on_b_add_clicked();
     void on_b_delete_clicked();
@@ -145,6 +195,11 @@ private slots:
     void on_b_submitChanges_clicked();
     void on_b_revertChanges_clicked();
 
+    /*
+     * Устанавливает фильтр в табличном представлении
+     * по полю "Отдел" для отображения сотрудников
+     * из указанного в arg1 отдела.
+     */
     void on_comboBox_departments_textActivated(const QString &arg1);
 
     void on_action_saveAs_triggered();
