@@ -1,9 +1,10 @@
-#include "include/tcpclient.h"
-#include "include/dialogselectbackupversion.h"
+#include "tcpclient.h"
+#include "dialogselectbackupversion.h"
 
 #include <QFile>
 #include <QCoreApplication>
 #include <QTextStream>
+#include <QDataStream>
 
 TcpClient::TcpClient(QString host, int port, QWidget *parent)
     : QWidget(parent)
@@ -35,7 +36,7 @@ void TcpClient::sendDatabase(const QFileInfo &dbFileInfo)
     QByteArray data;
     data.clear();
     QDataStream out(&data, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_2);
+    out.setVersion(QDataStream::Qt_5_0);
 
     QFile file(dbFileInfo.absoluteFilePath());
     if (!file.exists())
@@ -71,7 +72,7 @@ void TcpClient::sendDatabasesListRequest()
     QByteArray data;
     data.clear();
     QDataStream out(&data, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_2);
+    out.setVersion(QDataStream::Qt_5_0);
 
     out << quint16(0);
     out << quint16(TcpDataType::DatabasesListRequest);
@@ -87,7 +88,7 @@ void TcpClient::sendSelectedDatabaseName(const QString &selDbName)
     QByteArray data;
     data.clear();
     QDataStream out(&data, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_2);
+    out.setVersion(QDataStream::Qt_5_0);
 
     out << quint16(0);
     out << quint16(TcpDataType::SelectedDatabaseName);
@@ -102,7 +103,7 @@ void TcpClient::sendSelectedDatabaseName(const QString &selDbName)
 void TcpClient::slotReadyRead()
 {
     QDataStream in(m_pServerSocket);
-    in.setVersion(QDataStream::Qt_6_2);
+    in.setVersion(QDataStream::Qt_5_0);
 
     quint16 nextBlockSize = 0;
     quint16 incomingDataType = 0;

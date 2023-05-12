@@ -1,10 +1,11 @@
-#include "include/TcpServer.h"
+#include "TcpServer.h"
 
 #include <QCoreApplication>
 #include <QFile>
 #include <QDateTime>
 #include <QDebug>
 #include <QTextStream>
+#include <QDataStream>
 
 TcpServer::TcpServer()
 {
@@ -43,7 +44,7 @@ void TcpServer::sendDatabase(const QFileInfo &dbFileInfo)
     data.clear();
 
     QDataStream out(&data, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_2);
+    out.setVersion(QDataStream::Qt_5_0);
 
     out << quint16(0);
     out << quint16(TcpDataType::Database);
@@ -64,7 +65,7 @@ void TcpServer::sendDatabaseFileCreationResult(bool dbFileCreated)
     data.clear();
 
     QDataStream out(&data, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_2);
+    out.setVersion(QDataStream::Qt_5_0);
 
     out << quint16(0);
     if (dbFileCreated)
@@ -82,7 +83,7 @@ void TcpServer::sendDatabasesList()
     data.clear();
 
     QDataStream out(&data, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_2);
+    out.setVersion(QDataStream::Qt_5_0);
 
     out << quint16(0);
     out << quint16(TcpDataType::DatabasesList);
@@ -175,7 +176,7 @@ void TcpServer::slotReadyRead()
 {
     m_pClientSocket = (QTcpSocket*)sender();
     QDataStream in(m_pClientSocket);
-    in.setVersion(QDataStream::Qt_6_2);
+    in.setVersion(QDataStream::Qt_5_0);
 
     QByteArray data;
     data.clear();

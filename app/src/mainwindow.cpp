@@ -1,8 +1,8 @@
-#include "include/mainwindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "include/dialogselectorg.h"
-#include "include/tablecommands.h"
-#include "include/databasecreation.h"
+#include "dialogselectorg.h"
+#include "tablecommands.h"
+#include "databasecreation.h"
 
 #include <QCoreApplication>
 #include <QSqlQuery>

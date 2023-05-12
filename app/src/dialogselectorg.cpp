@@ -1,6 +1,6 @@
-#include "include/dialogselectorg.h"
+#include "dialogselectorg.h"
 #include "ui_dialogselectorg.h"
-#include "include/databasecreation.h"
+#include "databasecreation.h"
 
 #include <QSqlQuery>
 #include <QSqlDatabase>

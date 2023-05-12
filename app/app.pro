@@ -2,6 +2,9 @@ QT       += core gui widgets sql network
 
 CONFIG += c++11
 
+INCLUDEPATH += \
+    include
+
 SOURCES += \
     src/dialoginsertinfo.cpp \
     src/dialogselectbackupversion.cpp \
